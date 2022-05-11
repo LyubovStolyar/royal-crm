@@ -1,18 +1,22 @@
-const orders = [];
-function addOrder(){
+module.exports = {
+orders: [],
+
+addOrder: function () {
     const name = process.argv.slice(2);
 
     if (!name || name.length ===0){
         throw ('Error: name is empty');
     }
 
-    orders.push({
+    this.orders.push({
         name: name,
-        id:orders.length,
+        id: this.orders.length,
     });
-    orders.forEach(order=> {
-        console.log("ok. name: ${orders.name} was created");
+   },
+
+orderslist: function(){
+    this.orders.forEach (order => {
+        console.log(`ok. name: ${orders.name} was created`);
     })
 }
-
-addOrder();
+}

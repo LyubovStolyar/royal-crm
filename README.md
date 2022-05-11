@@ -1,4 +1,12 @@
-# royal-crm
-just test
 
-tech stack: node.js, bootstrap, angular...
+Tech stack
+* Node.js
+* Express.js
+* MySql
+
+install dependencies:
+  npm install
+
+run the app:
+  SET DEBUG='royal-crm:*'; npm start
+

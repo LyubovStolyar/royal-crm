@@ -1,23 +1,48 @@
-const customers = [];
+const database = require('./database');
 
-function addCustomer() {
-    const username = process.argv.slice(2);
-
-    if (!username || username.length === 0) {
-        throw('ERROR: username is empty');
+module.exports = {
+  
+  addCustomer: function (name, phone, email, country_id) {
+    
+    if (!name || name.length === 0) {
+      throw "ERROR: name is empty";
     }
 
-    const tempPwd = Math.floor(Math.random() * 10000000);
+  database.pool.getConnection(function (connErr, connection) {
+      if (connErr) throw connErr; //not connected!
 
-    customers.push({
-        username: username,
-        password: tempPwd,
-    });
+      const sql = "INSERT INTO customers( name, phone, email, country_id)" +
+      "VALUES ('"+ name +"', '"+ phone +"', '"+ email +"','"+ country_id +"');";
+    
+  connection.query(
+        sql, 
+        [name, phone, email, country_id],
+        function (sqlErr, result, fields) {
+        if (sqlErr) throw sqlErr;
 
-    customers.forEach(customer => {
-        console.log(`ok. username: ${ customer.username } with temporary password: ${ customer.password}.`);
+        console.log(fields);
+        console.log(result);
+      });
     })
+  },
+
+    customersList: async function (req, res){
+      try{
+      const sql = "SELECT * FROM customers";
+      const connection = await database.getConnection();
+      const result = await database.runQuery (connection, sql);
+      res.send(result);
+} 
+catch (err){
+  console.log(err);
 }
 
-addCustomer();
 
+//       database.getConnection()
+//       .then(connection => database.runQuery(connection, sql))
+// .then(result => res.send(result))
+// .catch(err => console.log(err));
+  }
+
+  
+};
