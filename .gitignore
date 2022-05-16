@@ -1,13 +1,10 @@
 /app.js
 /bin
-/Minin
 /node_modules
 /package-lock.json
 /package.json
-/price.js
-/public
-/routes
-/SET
-/users.js
 /views
-/xhr.js
+/config/
+
+.vscode
+.idea

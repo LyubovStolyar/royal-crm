@@ -48,7 +48,7 @@ module.exports = {
 customersList: async function (req, res, next) {
   const sql = "SELECT cust.id, cust.name, cust.phone, cust.email, " +
       "cntr.id AS country_id, cntr.name AS country_name, cntr.country_code FROM customers cust " +
-      "LEFT JOIN countries cntr ON cust.country_id = cntr.id ORDER BY cust.name ASC;";
+      "LEFT JOIN country cntr ON cust.country_id = cntr.id ORDER BY cust.name ASC;";
 
   try {
       // const connection = await database.getConnection();

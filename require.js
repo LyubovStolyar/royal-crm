@@ -6,3 +6,7 @@ c.addCustomer();
 c.customersList();
 
 p.addProduct();
+p.productList();
+
+p.addOrder();
+p.orderList();
