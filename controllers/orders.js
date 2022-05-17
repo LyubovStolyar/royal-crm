@@ -1,22 +1,47 @@
+const { redirect } = require("express/lib/response");
+const database = require("./database");
+
 module.exports = {
-orders: [],
-
-addOrder: function () {
-    const name = process.argv.slice(2);
-
-    if (!name || name.length ===0){
-        throw ('Error: name is empty');
-    }
-
-    this.orders.push({
-        name: name,
-        id: this.orders.length,
-    });
-   },
-
-orderslist: function(){
-    this.orders.forEach (order => {
-        console.log(`ok. name: ${orders.name} was created`);
-    })
-}
-}
+    addOrder: async function (customer_id, product_id, price, quantity) {
+        const sql =
+          "INSERT INTO orders (customer_id, product_id, price, quantity)" + "VALUES(?,?,?);";
+      },
+      orderList: async function (req, res, next) {
+          
+        const sql = "SELECT * FROM orders;";
+    
+        try {
+          const result = await database.query(sql);
+          res.send(result[0]);
+        } catch (err) {
+          console.log(err);
+        }
+      },
+      // todo: search product by name
+      exportOrder: async function () {
+        const sql =
+          "SELECT customer_id, product_id, price, quantity FROM orders ORDER BY name ASC;";
+      },
+    
+      // todo: edit product details
+      editOrder: async function () {
+        const sql = 
+        "UPDATE * FROM orders ORDER BY name ASC;";
+      },
+    
+      // todo: delete product
+      deleteOrder: async function () {
+        const sql = 
+        "DROP * FROM orders ORDER;";
+      },
+    
+      // todo: search product by name
+      searchOrder: async function () {
+        // const sql = SELECT WHERE...
+      },
+    
+      // todo: sort products by name...
+      sortOrder: async function () {
+          "SELECT * FROM `orders`"
+      }
+};

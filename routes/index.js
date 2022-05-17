@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const cm = require('../controllers/customers');
+const pm = require('../controllers/products');
 const productsModule = require('../controllers/products');
 const ordersModule = require('../controllers/orders');
 
@@ -35,6 +36,6 @@ router.get('/customer-detailes', cm.viewCustomerDetails);
 router.get('/products', productsModule.productList);
 
 /* orders */
-router.get('/orders', ordersModule.orderslist);
+router.get('/orders', ordersModule.orderList);
 
 module.exports = router;
