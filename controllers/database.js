@@ -1,24 +1,30 @@
-const mysql = require("mysql2");
+const { MongoClient } = require("mongodb");
 const config = require("../config/dev");
 
+const client = new MongoClient(config.MONGO_HOST);
+let db = undefined;
 
-const pool = mysql.createPool({
-  host: config.DB_HOST,
-  user: config.DB_user,
-  password: config.DB_PASSWORD,
-  database: config.DB_NAME,
-  waitForConnections: true,
-  connectionLimit: 5,
-  queueLimit: 0
-});
+async function getDB() {
+  if (db) return db;
 
-async function query (sql, values){
-    const promisePool = pool.promise();
-    return [rows, fields] = await promisePool.query(sql, values);
+  await client.connect();
+  return client.db(config.MONGO_DB);
 }
 
-    
+// const pool = mysql.createPool({
+//   host: config.DB_HOST,
+//   user: config.DB_user,
+//   password: config.DB_PASSWORD,
+//   database: config.DB_NAME,
+//   waitForConnections: true,
+//   connectionLimit: 5,
+//   queueLimit: 0
+// });
 
+// async function query (sql, values){
+//     const promisePool = pool.promise();
+//     return [rows, fields] = await promisePool.query(sql, values);
+// }
 
 // function getConnection(){
 //     return new Promise (function(resolve, reject){
@@ -36,10 +42,9 @@ async function query (sql, values){
 //         else resolve (result)
 //         });
 // });
-    
+
 // }
 
 module.exports = {
-pool,
-query
-}
+ getDB,
+};
