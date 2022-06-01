@@ -11,8 +11,8 @@ module.exports = {
     const schema = joi.object({
       name: joi.string().required().min(2).max(200),
       phone: joi.string().required().regex(/^[0-9]\d{8,11}$/),
-      email: joi.string().required(),
-      countryInputHtml: joi.number().required(),
+      email: joi.string().required(),regex(/^[^@]+@[^@]+$/),
+      countryId: joi.string().required(),
   });
 
   const { error, value } = schema.validate(reqBody);
