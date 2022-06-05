@@ -1,11 +1,11 @@
 const express = require('express');
 const router = express.Router();
 const pm = require('../controllers/products');
-const path = require('path');
+const fileMgmt = require('../shared/fileMgmt');
 
 router.get('/home', function (req, res, next) {
-    const filePath = path.join(__dirname, '../client', 'products-home.html');
-    res.sendFile(filePath);
+  const filePath = fileMgmt.getHtmlFilePath('products-home.html');
+  res.sendFile(filePath);
   });
   
   router.get('/', pm.productList);

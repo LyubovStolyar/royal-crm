@@ -1,7 +1,6 @@
 const database = require('./database');
 const joi = require('joi');
-const fs = require ('fs');
-const path = require ('path');
+const fileMgmt = require('../shared/fileMgmt');
 
 module.exports = {
   
@@ -11,7 +10,7 @@ module.exports = {
     const schema = joi.object({
       name: joi.string().required().min(2).max(200),
       phone: joi.string().required().regex(/^[0-9]\d{8,11}$/),
-      email: joi.string().required(),
+      email: joi.string().required().regex(/^[^@]+@[^@]+$/),
       countryInputHtml: joi.number().required(),
   });
 
@@ -46,9 +45,25 @@ module.exports = {
 },
 
 customersList: async function (req, res, next) {
-  const sql = "SELECT cust.id, cust.name, cust.phone, cust.email, " +
-      "cntr.id AS country_id, cntr.name AS country_name, cntr.country_code FROM customers cust " +
-      "LEFT JOIN country cntr ON cust.country_id = cntr.id ORDER BY cust.name ASC;";
+    const param = req.query;
+const schema = joi.object({
+    column: joi.string().valid('name', 'email', 'country_name').default('name'),
+    sort: joi.string().valid('ASC', 'DESC').default('ASC'),
+});
+
+const { error, value } = schema.validate(param);
+
+const fieldsMap = new Map ([
+    ['name', 'customers.name'],
+    ['email', 'customers.email'],
+    ['country_name', 'country.name'],
+    ]);
+
+
+  const sql = `SELECT customers.id, customers.name, customers.phone, customers.email,  
+            country.id AS country_id, country.name AS country_name, country.country_code  
+            FROM customers LEFT JOIN country ON customers.country_id = country.id 
+            ORDER BY ${fieldsMap.get(value.column)} ${value.sort};`;
 
   try {
       // const connection = await database.getConnection();
@@ -57,6 +72,7 @@ customersList: async function (req, res, next) {
   }
   catch (err) {
       console.log(err);
+      res.send(err);
   }
 },
 
@@ -65,31 +81,51 @@ customersList: async function (req, res, next) {
 exportCustomers: async function (req, res, next) {
   const sql = "SELECT cust.name, cust.phone, cust.email, " +
       "cntr.name AS country_name FROM customers cust " +
-      "LEFT JOIN countries cntr ON cust.country_id = cntr.id ORDER BY cust.name ASC;";
+      "LEFT JOIN country cntr ON cust.country_id = cntr.id ORDER BY cust.name ASC;";
 
-  try {
-      const result = await database.query(sql); // [{rows}, {fields}]
+      fileMgmt.exportToFile(res, sql, 'customers');
+    },
 
-      const now = new Date().getTime(); // moment.js
-      const filePath = path.join(__dirname, '../files', `customers-${now}.txt`); 
-      // c:\\projects\royal-crm\files\customers.txt
-      const stream = fs.createWriteStream(filePath);
+ 
+    findCustomer: async function (req, res, next) {
 
-      stream.on('open', function(){
-          stream.write(JSON.stringify(result[0]));
-          stream.end();
-      });
+        const param = req.query;
 
-      stream.on('finish', function(){
-          res.send(`Success. File at: ${filePath}`);
-      });
-  }
-  catch(err){
-      throw err;
-  }
+        const schema = joi.object({
+            search: joi.string().required().min(2)
+        });
 
-},
+        const { error, value } = schema.validate(param);
 
+        if (error) {
+            res.status(400).send(`search error: ${error}`);
+            throw error;
+        }
+
+        const searchQuery = `%${value.search}%`;
+
+        const sql = `SELECT customers.id, customers.name, customers.phone, customers.email,   
+            countries.id AS country_id, countries.name AS country_name, countries.country_code  
+            FROM customers LEFT JOIN countries ON customers.country_id = countries.id 
+            WHERE customers.name LIKE ? OR customers.email LIKE ? OR customers.country_id LIKE ? 
+            ORDER BY customers.name ASC;`;
+
+        try {
+            const result = await database.query(
+                sql,
+                [
+                    searchQuery,
+                    searchQuery,
+                    searchQuery,
+                ]
+            );
+
+            res.send(result[0]);
+        } catch (err) {
+            res.status(400).send(`search error: ${err}`);
+            throw error;
+        }
+    },
 
 // todo: delete customer
 // sql: DROP
@@ -102,7 +138,7 @@ deleteCustomer: async function (req, res, next) {
 
 // todo: search in customers by parameter (name,email,country)
 // sql: SELECT WHERE
-findCustomer: async function (req, res, next) { },
+
 
 // todo: edit/update customer
 updateCustomer: async function (req, res, next) { },

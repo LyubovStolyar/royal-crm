@@ -1,15 +1,21 @@
 const express = require("express");
 const router = express.Router();
 const cm = require("../controllers/customers");
-const path = require("path");
+const fileMgmt = require('../shared/fileMgmt');
 
 /* customers */
 router.get('/', function (req, res, next) {
-  const filePath = path.join(__dirname, "../client", "customers-home.html");
+  const filePath = fileMgmt.getHtmlFilePath("customers-home.html");
   res.sendFile(filePath);
 });
 
+router.get('/details/:id', function(req, res, next){
+  const filePath = fileMgmt.getHtmlFilePath('customer-details.html');
+})
+
+
 router.get   ("/", cm.customersList);
+router.get   ('/find', cm.findCustomer);
 router.get   ("/export", cm.exportCustomers);
 // todo: edit/update customer
 router.get   ("/detailes", cm.viewCustomerDetails);
