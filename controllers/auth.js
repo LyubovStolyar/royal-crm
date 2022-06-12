@@ -41,10 +41,14 @@ module.exports = {
     const token = jwt.sign(param, config.JWT_SECRET, { expiresIn: "72800s" });
 
     res
-      .cookie("access_token", token, {
-        httpOnly: true,
-        secure: true,
-      })
-      .send("Welcome, you are now logged in.");
-  },
+    .json({
+      token: token
+    })
+  //     .cookie("access_token", token, {
+  //       httpOnly: true,
+  //       secure: true,
+  //     })
+  //     .send("Welcome, you are now logged in.");
+   }
+   
 };

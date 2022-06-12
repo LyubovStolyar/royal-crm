@@ -11,6 +11,7 @@ router.get('/home', function (req, res, next) {
   router.get('/', pm.productList);
   router.post('/', pm.addProduct);
   router.get('/export', pm.exportProducts);
-
+  router.put('/:id', pm.editProduct);
+router.delete('/:id', pm.deleteProduct);
 
   module.exports = router;

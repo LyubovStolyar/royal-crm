@@ -14,6 +14,7 @@ const pool = mysql.createPool({
 
 async function query (sql, values){
     const promisePool = pool.promise();
+    console.log(pool.format(sql, values));
     return [rows, fields] = await promisePool.query(sql, values);
 }
 

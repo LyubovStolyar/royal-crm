@@ -27,7 +27,7 @@ module.exports = {
       const result = await database.query(
         sql, [
         reqBody.name,
-        reqBody.decription,
+        reqBody.description,
         reqBody.price,
       ]
       );
@@ -83,7 +83,32 @@ module.exports = {
   // todo: delete product
   deleteProduct: async function (req, res, next) {
     // const sql = DROP
-    res.send("todo delete products");
+
+    const schema = joi.object({
+      id: joi.number().required()
+    })
+   
+const { error, value } = schema.validate(req.params);
+
+if (error) {
+  res.status(400).send('error delete product');
+  console.log(error.details[0].message);
+  return;
+}
+
+const sql = 'DELETE FROM products WHERE id=?';
+
+try {
+  const result = await database.query(sql, [value.id]);
+  res.json( {
+   id: value.id
+});
+}
+catch (err) {
+  res.status(400).send('error delete product');
+  console.log(error.details[0].message);
+}
+ 
   },
 
   // todo: search product by name
