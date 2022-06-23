@@ -6,8 +6,8 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  title = 'Welcome';
-  inputType = 'text';
+  title = '';
+  // inputType = 'text';
 
   night = true;
   items = ['orange', 'banana', 'apple', 'cherry']
@@ -15,7 +15,11 @@ export class AppComponent {
 
  
 
-  isItNight(){
+  isItNight() {
     return this.night;
+  }
+
+  addAnotherItem(){
+    this.items.push('pineapple');
   }
 }
