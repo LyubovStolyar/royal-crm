@@ -5,7 +5,6 @@ const database = require('../controllers/database');
 module.exports = {
 getHtmlFilePath: function (htmlFileName){
 return path.join(__dirname, '../client', htmlFileName);
-
 },
 
 exportToFile: async function (res, sql, filePrefix) {
@@ -13,7 +12,8 @@ exportToFile: async function (res, sql, filePrefix) {
         const result = await database.query(sql);
 
         const now = new Date().getTime();
-        const filePath = path.join(__dirname, '../exports', `${filePrefix}-${now}.txt`);
+        const fileName = `${filePrefix}-${now}.txt`;
+        const filePath = path.join(__dirname, '../exports', fileName);
         const stream = fs.createWriteStream(filePath);
 
         stream.on('open', function () {
@@ -22,13 +22,12 @@ exportToFile: async function (res, sql, filePrefix) {
           });
 
         stream.on('finish', function (){
-            res.send(`Success. File at: ${filePath}`);
+         res.json({name: fileName});
         });
     }
     catch (err) {
         throw err;
     }
 },
-
 
 }

@@ -1,0 +1,10 @@
+/* You can add global styles to this file, and also import other style files */
+@import "../common/bootstrap-variables";
+@import "../common/bootstrap";
+
+.light-theme {
+  background-color: #f5f8ff;
+  & {
+    color: #213446;
+  }
+}

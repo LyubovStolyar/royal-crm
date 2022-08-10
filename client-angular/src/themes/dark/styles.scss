@@ -1,0 +1,15 @@
+/* You can add global styles to this file, and also import other style files */
+@import "../common/bootstrap-variables";
+@import "../common/bootstrap";
+
+.dark-theme {
+  background-color: #1a2c55;
+
+
+  &, 
+  table th,
+  table td,
+  i {
+    color: #caced2;
+  }
+}

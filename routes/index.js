@@ -3,11 +3,19 @@ const router = express.Router();
 const mwAuth = require('../middleware/auth');
 const auth = require('../controllers/auth');
 const fileMgmt = require('../shared/fileMgmt');
+// const PoolCluster = require('mysql2/typings/mysql/lib/PoolCluster');
+
+router.options('*', function(req, res,next) {
+  res.send();
+});
+
 
 router.get('/signin', function(req, res, next){
   const filePath = fileMgmt.getHtmlFilePath('login.html');
   res.sendFile(filePath);
 })
+
+router.post('/register', auth.registerUser);
 
 router.post('/login', auth.login);
 
